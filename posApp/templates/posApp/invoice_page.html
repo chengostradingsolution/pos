@@ -1,0 +1,249 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    
+<style>
+    @page { size: A4; margin: 10mm; }
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-family: "Times New Roman", Times, serif;
+        color: #000;
+    }
+    body {
+        background: #fff;
+        -webkit-print-color-adjust: exact;
+    }
+    .page { width: 190mm; margin: 0 auto; padding: 6mm; box-sizing: border-box; border:1px solid black;margin-top:50px;}
+    .header { text-align: center; margin-bottom: 4px; }
+    .company-name { font-size: 22px; font-weight: bold; }
+    .invoice-title { font-size: 16px; font-weight: bold; margin-top: 6px; }
+
+    table { border-collapse: collapse; }
+    .details, .party-table, .prod-table { width: 100%; margin-top: 6px; font-size: 11px; }
+    .details td, .party-table td, .prod-table th, .prod-table td { border: 1px solid #000; padding: 6px; }
+    .prod-table th { font-size: 10px; text-align: center; }
+    .footer { margin-top: 8px; font-size: 10px; }
+
+    #printBtn { margin-top: 8px; }
+
+    .prod-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+    .prod-table th,
+    .prod-table td {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+        text-align: center;
+    }
+.prod-table td {
+    font-size: 10px;
+    padding: 4px;
+}
+.prod-table tr {
+    page-break-inside: avoid;
+}
+
+    @media print { #printBtn { display: none; } 
+    #printBtn2 { display: none; } 
+    .page {margin-top:0;}}
+</style>
+</head>
+
+<body>
+<div class="page">
+
+    <div class="header">
+        {% load static %}
+        <img style="width: 30%;margin: 10px;height: 30%;" src="{% static 'logo.png' %}" alt="">
+        <div class="company-name">CHENGOS TRADING SOLUTION.</div>
+        <div>6/545, NADUKKANDIYIL BUILDING, MORAYUR, MALAPPURAM, KERALA-673642 <br> Phone: +91 7012159893</div>
+        <div class="invoice-title">TAX INVOICE</div>
+        <div>GSTIN : 32AAVFC6121B1ZU</div>
+    </div>
+
+    <!-- Top Details -->
+    <table class="party-table">
+    <tr>
+        <!-- Billed To -->
+        <td>
+            <strong style="font-size: 16px;">Details of Receiver (Billed To)</strong><br><br>
+
+            <strong style="font-size: 14px;">Name :</strong>
+            <span class="bill-name" style="font-size: 12px;">{{ customer.name }}</span><br>
+
+            <strong style="font-size: 14px;">Address :</strong><br>
+            <span class="bill-address" style="font-size: 12px;">{{ customer.address }}</span>,<br>
+            <span class="bill-city" style="font-size: 12px;">{{ customer.city }}</span>,<br>
+            <span class="bill-state" style="font-size: 12px;">{{ customer.state }}</span> -
+            <span class="bill-pin" style="font-size: 12px;">{{ customer.pin }}</span><br>
+
+            <span class="bill-phone" style="font-size: 12px;">{{ customer.phone }}</span><br>
+
+            <strong style="font-size: 14px;">GSTIN :</strong>
+            <span class="bill-gstin" style="font-size: 12px;">{{ customer.gstin }}</span><br>
+
+            <strong style="font-size: 14px;">State :</strong>
+            <span class="bill-state-name" style="font-size: 12px;">{{ customer.state }}</span>
+            &nbsp;
+            <strong style="font-size: 14px;">State Code :</strong>
+            <span class="bill-state-code" style="font-size: 12px;">{{ customer.statecode }}</span>
+        </td>
+
+        <!-- Shipped To -->
+        <td>
+            <strong style="font-size: 16px;">Details of Consignee (Shipped To)</strong><br><br>
+
+            <strong style="font-size: 14px;">Name & Address :</strong><br>
+            <span class="ship-name" style="font-size: 12px;">{{ customer.sname }}</span><br>
+
+            <span class="ship-address" style="font-size: 12px;">{{ customer.saddress }}</span>,
+            <span class="ship-city" style="font-size: 12px;">{{ customer.scity }}</span><br>
+
+            <span class="ship-state" style="font-size: 12px;">{{ customer.sstate }}</span> –
+            <span class="ship-pin" style="font-size: 12px;">{{ customer.spin }}</span><br>
+
+            <span class="ship-phone" style="font-size: 12px;">{{ customer.sphone }}</span><br>
+
+            <strong style="font-size: 14px;">GSTIN :</strong>
+            <span class="ship-gstin" style="font-size: 12px;">{{ customer.sgstin }}</span><br>
+
+            <strong style="font-size: 14px;">State :</strong>
+            <span class="ship-state-name" style="font-size: 12px;">{{ customer.sstate }}</span>
+            &nbsp;
+            <strong style="font-size: 14px;">State Code :</strong>
+            <span class="ship-state-code" style="font-size: 12px;">{{ customer.sstatecode }}</span>
+        </td>
+    </tr>
+</table>
+
+
+    <!-- Product Table -->
+    <table class="prod-table">
+<colgroup>
+    <col style="width:3%">
+    <col style="width:10%">
+    <col style="width:6%">
+    <col style="width:5%">
+    <col style="width:5%">
+    <col style="width:7%">
+    <col style="width:7%">
+    <col style="width:5%">
+    <col style="width:5%">
+    <col style="width:7%">
+    <col style="width:4%">
+    <col style="width:6%">
+    <col style="width:4%">
+    <col style="width:6%">
+    <col style="width:10%">
+</colgroup>
+
+        <thead>
+            <tr>
+                <th>Sr</th><th>Name of Product</th><th>HSN</th><th>UOM</th><th>Qty</th>
+                <th>Rate</th><th>Amount</th><th>Dis%</th><th>Less</th><th>Taxable</th>
+                <th>CGST%</th><th>CGST</th><th>SGST%</th><th>SGST</th><th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for citem in cartitems %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td style="text-align:left;">
+                    {{citem.name}}<br>
+                    <small style="font-size:9px;">{{citem.code}}</small>
+                </td>
+                <td>{{citem.code}}</td>
+                <td>{{citem.uom}}</td>
+                <td>{{citem.qty}}</td>
+                <td>{{citem.price|floatformat:2}}</td>
+                <td>{{citem.tamount|floatformat:2}}</td>
+                <td>{{citem.dispercent}}</td>
+                <td>{{citem.dis|floatformat:2}}</td>
+                <td>{{citem.taxamount|floatformat:2}}</td>
+                <td>{{citem.cgstpercent}}%</td>
+                <td>{{citem.cgst|floatformat:2}}</td>
+                <td>{{citem.sgstpercent}}%</td>
+                <td>{{citem.sgst|floatformat:2}}</td>
+                <td>{{citem.totalamount|floatformat:2}}</td>
+            </tr>
+
+            {% endfor %}
+
+            <tr style="font-weight:bold;">
+                <td colspan="4" style="text-align:right;">Total:</td>
+                <td>{{sale.tqty}}</td>
+                <td></td>
+                <td>{{sale.sub_total}}</td>
+                <td></td>
+                <td></td>
+                <td>{{sale.taxable}}</td>
+                <td></td>
+                <td>{{sale.tcgst}}</td>
+                <td></td>
+                <td>{{sale.tsgst}}</td>
+                <td>{{sale.grand_total}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Summary -->
+    <table class="footer">
+        <tr>
+            <td style="width:60%; padding-right:8px;">
+                <strong>Invoice value (In Words)</strong><br>
+                <div style="border:1px solid #000; padding:6px; min-height:36px;">
+                    <em style="font-weight: 800;">{{grand_total_words}}</em>
+                </div>
+
+                <div style="margin-top:8px;">
+                    <strong>CONDITION OF SALE</strong><br>
+                    1. Prices subject to statutory tax submission.<br>
+                    2. Shortage/damage must be reported within 3 days.<br>
+                </div>
+            </td>
+
+            <td style="width:40%;">
+                <table style="width:100%;">
+                    <tr><td>Total Amount Before Discount :</td><td style="text-align:right;">{{sale.sub_total}}</td></tr>
+                    <tr><td>Total Discount :</td><td style="text-align:right;">{{sale.total_discounts}}</td></tr>
+                    <tr><td>Total Amount Before Tax :</td><td style="text-align:right;">{{sale.taxable}}</td></tr>
+                    <tr><td>Total Tax Value :</td><td style="text-align:right;">{{sale.ttax}}</td></tr>
+                    <tr><td>Freight & Charges :</td><td style="text-align:right;">0.00</td></tr>
+                    <tr><td><strong>Invoice Total :</strong></td><td style="text-align:right;"><strong style="font-size:12px;">{{sale.grand_total}}</strong></td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Signature -->
+    <div style="margin-top:10px;">
+        <div style="width:52%; display:inline-block;">Authorised Signatory</div>
+        <div style="width:46%; display:inline-block; text-align:right;">
+            <strong>CHENGOS TRADING SOLUTION.</strong>
+            <div style="border-top:1px solid #000; width:70%; margin-left:auto; margin-top:32px;"></div>
+            <div>Authorised Signatory</div>
+        </div>
+    </div>
+<button class="btn btn-success" id="printBtn" onclick="window.print()">PRINT</button>
+ <button type="button" onclick="window.location.href='{% url 'home-page' %}'">
+    Home
+</button>
+
+</div>
+
+
+
+
+</body>
+</html>

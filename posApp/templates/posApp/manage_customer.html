@@ -1,0 +1,305 @@
+{% load static %}
+
+<div class="container-fluid">
+    <form action="" id="customer-form">
+        <input type="hidden" name="id" value="{% if customer.pk %}{{customer.pk}}{% endif %}">
+        <div class="form-group mb-3">
+            <label for="gstin" class="control-label">GSTIN</label>
+            <input type="text" name="gstin" id="gstin" class="form-control form-control-sm rounded-0" value="{% if customer.gstin %}{{customer.gstin}}{% endif %}" required>
+        </div>
+        <div class="form-group mb-3">
+            
+            <div class="form-group mb-3">
+                <label for="name" class="control-label">Customer Name</label>
+                <input type="text" name="name" id="name" class="form-control form-control-sm rounded-0" value="{% if customer.name %}{{customer.name}}{% endif %}" required>
+            </div>
+            <div class="form-group mb-3">
+                <label for="phone" class="control-label">Phone</label>
+                <input type="text" name="phone" id="phone" class="form-control form-control-sm rounded-0" value="{% if customer.phone %}{{customer.phone}}{% endif %}" required>
+            </div>
+            <div class="form-group mb-3">
+                <label for="email" class="control-label">Email</label>
+                <input type="email" name="email" id="email" class="form-control form-control-sm rounded-0" value="{% if customer.email %}{{customer.email}}{% endif %}" required>
+            </div>
+            
+        
+            <div class="form-group mb-3">
+                <label for="address" class="control-label">Address</label>
+                <textarea rows="5" name="address" id="address" class="form-control form-control-sm rounded-0" required>{% if customer.address %}{{customer.address}}{% endif %}</textarea>
+            </div>
+            <div class="form-group mb-3">
+                <label for="city" class="control-label">City</label>
+                <input type="text" name="city" id="city" class="form-control form-control-sm rounded-0" value="{% if customer.city %}{{customer.city}}{% endif %}" required>
+            </div>
+
+            <div class="form-group mb-3">
+
+                <label for="state" class="control-label">State</label>
+                <select name="state" id="state" class="form-control form-control-sm rounded-0">
+                    <option value="" disabled {% if not customer.state %}selected{% endif %}  >-- Select State --</option >
+                      <optgroup label="States">
+                        <option value="Andhra Pradesh" {% if customer.state == "Andhra Pradesh" %}selected{% endif %}>Andhra Pradesh</option>
+                        <option value="Arunachal Pradesh" {% if customer.state == "Arunachal Pradesh" %}selected{% endif %}>Arunachal Pradesh</option>
+                        <option value="Assam" {% if customer.state == "Assam" %}selected{% endif %}>Assam</option>
+                        <option value="Bihar" {% if customer.state == "Bihar" %}selected{% endif %}>Bihar</option>
+                        <option value="Chhattisgarh" {% if customer.state == "Chhattisgarh" %}selected{% endif %}>Chhattisgarh</option>
+                        <option value="Goa" {% if customer.state == "Goa" %}selected{% endif %}>Goa</option>
+                        <option value="Gujarat" {% if customer.state == "Gujarat" %}selected{% endif %}>Gujarat</option>
+                        <option value="Haryana" {% if customer.state == "Haryana" %}selected{% endif %}>Haryana</option>
+                        <option value="Himachal Pradesh" {% if customer.state == "Himachal Pradesh" %}selected{% endif %}>Himachal Pradesh</option>
+                        <option value="Jharkhand" {% if customer.state == "Jharkhand" %}selected{% endif %}>Jharkhand</option>
+                        <option value="Karnataka" {% if customer.state == "Karnataka" %}selected{% endif %}>Karnataka</option>
+                        <option value="Kerala" {% if customer.state == "Kerala" %}selected{% endif %}>Kerala</option>
+                        <option value="Madhya Pradesh" {% if customer.state == "Madhya Pradesh" %}selected{% endif %}>Madhya Pradesh</option>
+                        <option value="Maharashtra" {% if customer.state == "Maharashtra" %}selected{% endif %}>Maharashtra</option>
+                        <option value="Manipur" {% if customer.state == "Manipur" %}selected{% endif %}>Manipur</option>
+                        <option value="Meghalaya" {% if customer.state == "Meghalaya" %}selected{% endif %}>Meghalaya</option>
+                        <option value="Mizoram" {% if customer.state == "Mizoram" %}selected{% endif %}>Mizoram</option>
+                        <option value="Nagaland" {% if customer.state == "Nagaland" %}selected{% endif %}>Nagaland</option>
+                        <option value="Odisha" {% if customer.state == "Odisha" %}selected{% endif %}>Odisha</option>
+                        <option value="Punjab" {% if customer.state == "Punjab" %}selected{% endif %}>Punjab</option>
+                        <option value="Rajasthan" {% if customer.state == "Rajasthan" %}selected{% endif %}>Rajasthan</option>
+                        <option value="Sikkim" {% if customer.state == "Sikkim" %}selected{% endif %}>Sikkim</option>
+                        <option value="Tamil Nadu" {% if customer.state == "Tamil Nadu" %}selected{% endif %}>Tamil Nadu</option>
+                        <option value="Telangana" {% if customer.state == "Telangana" %}selected{% endif %}>Telangana</option>
+                        <option value="Tripura" {% if customer.state == "Tripura" %}selected{% endif %}>Tripura</option>
+                        <option value="Uttar Pradesh" {% if customer.state == "Uttar Pradesh" %}selected{% endif %}>Uttar Pradesh</option>
+                        <option value="Uttarakhand" {% if customer.state == "Uttarakhand" %}selected{% endif %}>Uttarakhand</option>
+                        <option value="West Bengal" {% if customer.state == "West Bengal" %}selected{% endif %}>West Bengal</option>
+                        </optgroup>
+
+                       <optgroup label="Union Territories">
+                        <option value="Andaman and Nicobar Islands" {% if customer.state == "Andaman and Nicobar Islands" %}selected{% endif %}>Andaman and Nicobar Islands</option>
+                        <option value="Chandigarh" {% if customer.state == "Chandigarh" %}selected{% endif %}>Chandigarh</option>
+                        <option value="Dadra and Nagar Haveli and Daman and Diu" {% if customer.state == "Dadra and Nagar Haveli and Daman and Diu" %}selected{% endif %}>Dadra and Nagar Haveli and Daman and Diu</option>
+                        <option value="Delhi" {% if customer.state == "Delhi" %}selected{% endif %}>Delhi</option>
+                        <option value="Jammu and Kashmir" {% if customer.state == "Jammu and Kashmir" %}selected{% endif %}>Jammu and Kashmir</option>
+                        <option value="Ladakh" {% if customer.state == "Ladakh" %}selected{% endif %}>Ladakh</option>
+                        <option value="Lakshadweep" {% if customer.state == "Lakshadweep" %}selected{% endif %}>Lakshadweep</option>
+                        <option value="Puducherry" {% if customer.state == "Puducherry" %}selected{% endif %}>Puducherry</option>
+                    </optgroup>
+                </select>
+            </div>
+               <div class="form-group mb-3">
+                <label for="pin" class="control-label">Pin</label>
+                <input type="number" name="pin" id="pin" class="form-control form-control-sm rounded-0" value="{% if customer.pin %}{{customer.pin}}{% endif %}" required>
+            </div>
+             <div class="form-group mb-3">
+                <label for="statecode" class="control-label">Statecode</label>
+                <input type="number" name="statecode" id="statecode" class="form-control form-control-sm rounded-0" value="{% if customer.statecode %}{{customer.statecode}}{% endif %}" required>
+            </div>
+           
+               
+            <hr>
+            <h5>Shipping Details</h5>
+             <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="check" name="check" >
+                    <label class="form-check-label" for="check">Same as Billing Address</label>
+                </div>
+            <hr>
+
+            <div id="shipping-section">
+                <div class="form-group mb-3">
+                    <label>GSTIN</label>
+                    <input type="text" name="ship_gstin" id="ship_gstin"
+                        class="form-control form-control-sm rounded-0"
+                        value="{% if customer.sgstin %}{{ customer.sgstin }}{% endif %}">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Name</label>
+                    <input type="text" name="ship_name" id="ship_name"
+                        class="form-control form-control-sm rounded-0"
+                        value="{% if customer.sname %}{{ customer.same }}{% endif %}">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Phone</label>
+                    <input type="text" name="ship_phone" id="ship_phone"
+                        class="form-control form-control-sm rounded-0"
+                        value="{% if customer.sphone %}{{ customer.sphone }}{% endif %}">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Email</label>
+                    <input type="email" name="ship_email" id="ship_email"
+                        class="form-control form-control-sm rounded-0"
+                        value="{% if customer.semail %}{{ customer.semail }}{% endif %}">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Address</label>
+                    <textarea rows="5" name="ship_address" id="ship_address"
+                            class="form-control form-control-sm rounded-0">{% if customer.saddress %}{{ customer.saddress }}{% endif %}</textarea>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>City</label>
+                    <input type="text" name="ship_city" id="ship_city"
+                        class="form-control form-control-sm rounded-0"
+                        value="{% if customer.scity %}{{ customer.scity }}{% endif %}">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>State</label>
+                    <select name="ship_state" id="ship_state"
+                            class="form-control form-control-sm rounded-0">
+                        <option value="" disabled {% if not customer.sstate %}selected{% endif %}>
+                            -- Select State --
+                        </option>
+
+                        <optgroup label="States">
+                            <option value="Andhra Pradesh" {% if customer.sstate == "Andhra Pradesh" %}selected{% endif %}>Andhra Pradesh</option>
+                            <option value="Arunachal Pradesh" {% if customer.sstate == "Arunachal Pradesh" %}selected{% endif %}>Arunachal Pradesh</option>
+                            <option value="Assam" {% if customer.sstate == "Assam" %}selected{% endif %}>Assam</option>
+                            <option value="Bihar" {% if customer.sstate == "Bihar" %}selected{% endif %}>Bihar</option>
+                            <option value="Chhattisgarh" {% if customer.sstate == "Chhattisgarh" %}selected{% endif %}>Chhattisgarh</option>
+                            <option value="Goa" {% if customer.sstate == "Goa" %}selected{% endif %}>Goa</option>
+                            <option value="Gujarat" {% if customer.sstate == "Gujarat" %}selected{% endif %}>Gujarat</option>
+                            <option value="Haryana" {% if customer.sstate == "Haryana" %}selected{% endif %}>Haryana</option>
+                            <option value="Himachal Pradesh" {% if customer.sstate == "Himachal Pradesh" %}selected{% endif %}>Himachal Pradesh</option>
+                            <option value="Jharkhand" {% if customer.sstate == "Jharkhand" %}selected{% endif %}>Jharkhand</option>
+                            <option value="Karnataka" {% if customer.sstate == "Karnataka" %}selected{% endif %}>Karnataka</option>
+                            <option value="Kerala" {% if customer.sstate == "Kerala" %}selected{% endif %}>Kerala</option>
+                            <option value="Madhya Pradesh" {% if customer.sstate == "Madhya Pradesh" %}selected{% endif %}>Madhya Pradesh</option>
+                            <option value="Maharashtra" {% if customer.sstate == "Maharashtra" %}selected{% endif %}>Maharashtra</option>
+                            <option value="Manipur" {% if customer.sstate == "Manipur" %}selected{% endif %}>Manipur</option>
+                            <option value="Meghalaya" {% if customer.sstate == "Meghalaya" %}selected{% endif %}>Meghalaya</option>
+                            <option value="Mizoram" {% if customer.sstate == "Mizoram" %}selected{% endif %}>Mizoram</option>
+                            <option value="Nagaland" {% if customer.sstate == "Nagaland" %}selected{% endif %}>Nagaland</option>
+                            <option value="Odisha" {% if customer.sstate == "Odisha" %}selected{% endif %}>Odisha</option>
+                            <option value="Punjab" {% if customer.sstate == "Punjab" %}selected{% endif %}>Punjab</option>
+                            <option value="Rajasthan" {% if customer.sstate == "Rajasthan" %}selected{% endif %}>Rajasthan</option>
+                            <option value="Sikkim" {% if customer.sstate == "Sikkim" %}selected{% endif %}>Sikkim</option>
+                            <option value="Tamil Nadu" {% if customer.sstate == "Tamil Nadu" %}selected{% endif %}>Tamil Nadu</option>
+                            <option value="Telangana" {% if customer.sstate == "Telangana" %}selected{% endif %}>Telangana</option>
+                            <option value="Tripura" {% if customer.sstate == "Tripura" %}selected{% endif %}>Tripura</option>
+                            <option value="Uttar Pradesh" {% if customer.sstate == "Uttar Pradesh" %}selected{% endif %}>Uttar Pradesh</option>
+                            <option value="Uttarakhand" {% if customer.sstate == "Uttarakhand" %}selected{% endif %}>Uttarakhand</option>
+                            <option value="West Bengal" {% if customer.sstate == "West Bengal" %}selected{% endif %}>West Bengal</option>
+                        </optgroup>
+
+                        <optgroup label="Union Territories">
+                            <option value="Andaman and Nicobar Islands" {% if customer.sstate == "Andaman and Nicobar Islands" %}selected{% endif %}>Andaman and Nicobar Islands</option>
+                            <option value="Chandigarh" {% if customer.sstate == "Chandigarh" %}selected{% endif %}>Chandigarh</option>
+                            <option value="Dadra and Nagar Haveli and Daman and Diu" {% if customer.sstate == "Dadra and Nagar Haveli and Daman and Diu" %}selected{% endif %}>Dadra and Nagar Haveli and Daman and Diu</option>
+                            <option value="Delhi" {% if customer.sstate == "Delhi" %}selected{% endif %}>Delhi</option>
+                            <option value="Jammu and Kashmir" {% if customer.sstate == "Jammu and Kashmir" %}selected{% endif %}>Jammu and Kashmir</option>
+                            <option value="Ladakh" {% if customer.sstate == "Ladakh" %}selected{% endif %}>Ladakh</option>
+                            <option value="Lakshadweep" {% if customer.sstate == "Lakshadweep" %}selected{% endif %}>Lakshadweep</option>
+                            <option value="Puducherry" {% if customer.sstate == "Puducherry" %}selected{% endif %}>Puducherry</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Pin</label>
+                    <input type="number" name="ship_pin" id="ship_pin"
+                        class="form-control form-control-sm rounded-0"
+                        value="{% if customer.spin %}{{ customer.spin }}{% endif %}">
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>Statecode</label>
+                    <input type="number" name="ship_statecode" id="ship_statecode"
+                        class="form-control form-control-sm rounded-0"
+                        value="{% if customer.sstatecode %}{{ customer.sstatecode }}{% endif %}">
+                </div>
+            </div>
+
+            
+            <div class="form-group mb-3">
+                <label for="status" class="control-label">Status</label>
+                <!-- <select name="status" id="status" class="form-select form-select-sm rounded-0" required>
+            {% if customer.status and customer.status == 1 %}
+            <option value="1" selected>Active</option>
+            {% else %}
+            <option value="1">Active</option>
+            {% endif %}
+
+            {% if customer.status and customer.status == 0 %}
+            <option value="0" selected>Inactive</option>
+            {% else %}
+            <option value="0">Inactive</option>
+            {% endif %}
+        </select> -->
+        <select name="status" required>
+    <option value="1" {% if customer.status == 1 %}selected{% endif %}>Active</option>
+    <option value="0" {% if customer.status == 0 %}selected{% endif %}>Inactive</option>
+</select>
+
+
+            </div>
+    </form>
+    </div>
+    <script>
+$('#check').on('change', function () {
+    if ($(this).is(':checked')) {
+        $('#ship_gstin').val($('#gstin').val());
+        $('#ship_name').val($('#name').val());
+        $('#ship_phone').val($('#phone').val());
+        $('#ship_email').val($('#email').val());
+        $('#ship_address').val($('#address').val());
+        $('#ship_city').val($('#city').val());
+        $('#ship_state').val($('#state').val());
+        $('#ship_pin').val($('#pin').val());
+        $('#ship_statecode').val($('#statecode').val());
+    } else {
+        $('#shipping-section').find('input, textarea, select').val('');
+    }
+});
+</script>
+
+    <script>
+        $(function() {
+            $('#customer-form').submit(function(e) {
+                e.preventDefault();
+                var _this = $(this)
+                $('.err-msg').remove();
+                var el = $('<div>')
+                el.addClass("alert alert-danger err-msg")
+                el.hide()
+                if (_this[0].checkValidity() == false) {
+                    _this[0].reportValidity();
+                    return false;
+                }
+                start_loader();
+                $.ajax({
+                    headers: {
+                        "X-CSRFToken": '{{csrf_token}}'
+                    },
+                    url: "{% url 'save-customer-page' %}",
+                    data: new FormData($(this)[0]),
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    method: 'POST',
+                    type: 'POST',
+                    dataType: 'json',
+                    error: err => {
+                        console.log(err)
+                        end_loader();
+                    },
+                    success: function(resp) {
+                        if (typeof resp == 'object' && resp.status == 'success') {
+                            el.removeClass("alert alert-danger err-msg")
+                            location.reload()
+                        } else if (resp.status == 'failed' && !!resp.msg) {
+                            el.text(resp.msg)
+                       } else if (resp.error) {
+                            el.text(resp.error);
+                            } else {
+                                el.text("Unknown error");
+                            
+                            end_loader();
+                            console.err(resp)
+                        }
+                        _this.prepend(el)
+                        el.show('slow')
+                        $("html, body, .modal").scrollTop(0);
+                        end_loader()
+                    }
+                })
+            })
+        })
+    </script>

@@ -1,0 +1,105 @@
+{% block ScriptBlock %}
+{% load static %}
+
+<script>
+var product_json = '{{ product_json }}';
+
+if (product_json == "" || product_json == "{}") {
+    product_json = {};
+} else {
+    product_json = product_json.replaceAll('&quot;', '"');
+    product_json = $.parseJSON(product_json);
+}
+
+var prod_arr = {};
+Object.keys(product_json).map(k => {
+    prod_arr[product_json[k].id] = product_json[k];
+});
+
+/* ========================= CALC FUNCTION ========================= */
+function calc() {
+    var sub_total = 0;
+
+    $('#POS-field table tbody tr').each(function () {
+
+        let price = parseFloat($(this).find('[name="price[]"]').val());
+        let qty = parseFloat($(this).find('[name="qty[]"]').val()) || 0;
+        let gst = parseFloat($(this).find('[name="gst[]"]').val()) || 0;
+
+        let base_total = price * qty;
+        let gst_amount = base_total * (gst / 100);
+        let item_total = base_total + gst_amount;
+
+        $(this).find('.product_total').text(item_total.toFixed(2));
+
+        sub_total += item_total;
+    });
+
+    let tax = parseFloat($('[name="tax"]').val()) / 100;
+    let tax_amount = sub_total * tax;
+
+    $('#tax_amount').text(tax_amount.toFixed(2));
+    $('[name="tax_amount"]').val(tax_amount);
+
+    let grand_total = sub_total + tax_amount;
+
+    $('#grand_total').text(grand_total.toFixed(2));
+    $('[name="grand_total"]').val(grand_total);
+
+    $('#sub_total').text(sub_total.toFixed(2));
+    $('[name="sub_total"]').val(sub_total);
+}
+
+/* ========================= ADD ITEM ========================= */
+$(function () {
+
+    $('#add_item').click(function () {
+        var id = $('#product-id').val();
+        var qty = $('#product-qty').val();
+        var gst = $('#product-gst').val();
+
+        if (!id || !qty) {
+            alert("Product and Quantity are required!");
+            return;
+        }
+
+        if (prod_arr[id]) {
+
+            if ($('[name="product_id[]"][value="' + id + '"]').length > 0) {
+                alert("Item already added.");
+                return;
+            }
+
+            let data = prod_arr[id];
+            var tr = $($('noscript#item-clone').html()).clone();
+
+            tr.find('[name="qty[]"]').val(qty);
+            tr.find('[name="product_id[]"]').val(id);
+            tr.find('[name="price[]"]').val(data.price);
+            tr.find('[name="gst[]"]').val(gst);
+
+            tr.find('.product_name').text(data.name);
+            tr.find('.product_price').text(data.price.toFixed(2));
+            tr.find('.product_gst').text(gst + "%");
+
+            $('#POS-field table tbody').append(tr);
+
+            calc();
+
+            tr.find('[name="qty[]"]').on('input', calc);
+
+            tr.find('.rem-item').click(function () {
+                tr.remove();
+                calc();
+            });
+
+        } else {
+            alert("Invalid product");
+        }
+    });
+
+    $('[name="tax"]').on('input', calc);
+
+});
+</script>
+{% endblock ScriptBlock %}

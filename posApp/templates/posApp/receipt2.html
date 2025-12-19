@@ -1,0 +1,339 @@
+{% load humanize %}
+{% load static %}
+
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Proforma Invoice - {{ transaction.code }}</title>
+<style>
+    /* A4 print setup */
+    @page { size: A4; margin: 10mm; }
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-family: "Times New Roman", Times, serif;
+        color: #000;
+    }
+    body {
+        background: #fff;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .page {
+        box-sizing: border-box;
+        width: 190mm; /* A4 width (210mm) minus margins (10mm each side) */
+        margin: 0 auto;
+        padding: 6mm;
+    }
+
+    /* Header */
+    .header {
+        text-align: center;
+        margin-bottom: 4px;
+    }
+    .company-name {
+        font-size: 18px;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+    }
+    .company-info {
+        font-size: 10.5px;
+        margin-top: 2px;
+    }
+    .invoice-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 6px;
+    }
+    .gstin {
+        font-size: 11px;
+        margin-top: 2px;
+    }
+
+    /* details area */
+    .details {
+        width: 100%;
+        margin-top: 6px;
+        border: 1px solid #000;
+        border-collapse: collapse;
+        font-size: 11px;
+    }
+    .details td {
+        vertical-align: top;
+        padding: 6px 6px;
+        border-right: 1px solid #000;
+    }
+    .details tr td:last-child { border-right: none; }
+
+    /* receiver/consignee table */
+    .party-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        margin-top: 6px;
+    }
+    .party-table td {
+        border: 1px solid #000;
+        padding: 6px 6px;
+        vertical-align: top;
+    }
+
+    /* product table */
+    .prod-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 6px;
+        font-size: 10.5px;
+    }
+    .prod-table th, .prod-table td {
+        border: 1px solid #000;
+        padding: 4px 6px;
+        vertical-align: top;
+    }
+    .prod-table th {
+        font-size: 10px;
+        text-align: center;
+        font-weight: bold;
+        background: #fff;
+    }
+
+    /* precise column widths (to match PDF) */
+    .col-sr { width: 10mm; text-align:center; }           /* Sr No */
+    .col-name { width: 65mm; text-align:left; }           /* Product name */
+    .col-hsn { width: 18mm; text-align:center; }          /* HSN */
+    .col-uom { width: 12mm; text-align:center; }          /* UOM */
+    .col-qty { width: 12mm; text-align:center; }          /* Qty */
+    .col-rate { width: 18mm; text-align:right; }          /* Rate */
+    .col-amount { width: 20mm; text-align:right; }        /* Amount */
+    .col-dispr { width: 10mm; text-align:center; }        /* Dis % */
+    .col-less { width: 16mm; text-align:right; }         /* Less Discount */
+    .col-taxable { width: 20mm; text-align:right; }      /* Taxable Value */
+    .col-cgst-rate { width: 12mm; text-align:center; }   /* CGST Rate */
+    .col-cgst-amt { width: 18mm; text-align:right; }     /* CGST Amount */
+    .col-sgst-rate { width: 12mm; text-align:center; }   /* SGST Rate */
+    .col-sgst-amt { width: 18mm; text-align:right; }     /* SGST Amount */
+    .col-total { width: 20mm; text-align:right; }        /* Total */
+
+    /* totals row emphasis */
+    .totals td { font-weight: bold; font-size: 11px; }
+
+    /* footer and conditions */
+    .footer {
+        width: 100%;
+        margin-top: 8px;
+        font-size: 10px;
+    }
+
+    .signature-box {
+        width: 48%;
+        display: inline-block;
+        vertical-align: top;
+        text-align: center;
+        margin-top: 8px;
+    }
+    .signature-box .box {
+        border-top: 1px solid #000;
+        width: 70%;
+        margin: 18px auto 4px auto;
+        height: 2px;
+    }
+
+    /* print button hidden on print */
+    #printBtn { margin-top: 8px; }
+    @media print {
+        #printBtn { display: none; }
+        body { margin: 0; }
+    }
+
+    /* prevent page break inside product rows */
+    .prod-table tr { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+<div class="page">
+    <!-- Header -->
+    <div class="header">
+        <div class="company-name">Crust n Crumb Food Innovations India Pvt. Ltd.</div>
+        <div class="company-info">Block No. 32, KINFRA Small Industries Park, Nellad P.O, Muvattupuzha, Ernakulam-686669, Kerala, India | Phone: 0484-2597700 (30 Lines)</div>
+        <div class="invoice-title">PROFORMA INVOICE</div>
+        <div class="gstin">GSTIN : 32AABCM8755G1ZG</div>
+    </div>
+
+    <!-- Top details grid -->
+    <table class="details" style="margin-top:8px;">
+        <tr>
+            <td style="width:50%;"><strong>Reverse Charge </strong> : No<br>
+                <strong>Invoice Number</strong> : {{ transaction.code }}<br>
+                <strong>Invoice Date</strong> : {{ transaction.date_added|date:"d-m-Y" }}<br>
+                <strong>State</strong> : Kerala<br>
+                <strong>S.O. Number</strong> : {{ transaction.so_number|default:"FC BAKE" }}
+            </td>
+            <td style="width:50%;"><strong>Transportation Mode</strong> : <br>
+                <strong>Vehicle Number</strong> : <br>
+                <strong>Date of Supply</strong> : <br>
+                <strong>Place of Supply</strong> : <br>
+                <strong>Payment Terms</strong> : {{ transaction.payment_terms|default:"Advance" }}
+            </td>
+        </tr>
+    </table>
+
+    <!-- Receiver / Consignee -->
+    <table class="party-table">
+        <tr>
+            <td style="width:50%;">
+                <strong>Details of Receiver (Billed to)</strong><br><br>
+                <strong>Name :</strong> {{ transaction.customer_name|default:"FC Bake" }}<br>
+                <strong>Address :</strong><br>
+                {% if transaction.customer_address %}
+                {{ transaction.customer_address|linebreaksbr }}
+                {% else %}
+                Karinkallatani<br>Tayekode post,Karinkallatani<br>Malappuram dt,<br>Mob 9961897817
+                {% endif %}
+                <br><strong>GSTIN :</strong> {{ transaction.customer_gstin|default:"" }}<br>
+                <strong>State :</strong> Kerala &nbsp; <strong>State Code :</strong> 32
+            </td>
+            <td style="width:50%;">
+                <strong>Details of Consignee (Shipped to)</strong><br><br>
+                <strong>Name & Address :</strong><br>
+                {{ transaction.ship_name|default:"Karinkallatani" }}<br>
+                {{ transaction.ship_address|default:"Tayekode post,Karinkallatani,Mob 9961897817<br>Malappuram<br>679322" |safe }}<br>
+                <strong>GSTIN :</strong> {{ transaction.ship_gstin|default:"" }}<br>
+                <strong>State :</strong> Kerala &nbsp; <strong>State Code :</strong> 32
+            </td>
+        </tr>
+    </table>
+
+    <!-- Products header -->
+    <table class="prod-table" aria-describedby="Products">
+        <thead>
+            <tr>
+                <th class="col-sr">Sr.<br>No.</th>
+                <th class="col-name">Name of Product / Service</th>
+                <th class="col-hsn">HSN Code<br>(GST)</th>
+                <th class="col-uom">UOM</th>
+                <th class="col-qty">Qty</th>
+                <th class="col-rate">Rate</th>
+                <th class="col-amount">Amount</th>
+                <th class="col-dispr">Dis %</th>
+                <th class="col-less">Less<br>Discount</th>
+                <th class="col-taxable">Taxable<br>Value</th>
+                <th class="col-cgst-rate">CGST<br>Rate</th>
+                <th class="col-cgst-amt">CGST<br>Amount</th>
+                <th class="col-sgst-rate">SGST<br>Rate</th>
+                <th class="col-sgst-amt">SGST<br>Amount</th>
+                <th class="col-total">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in salesItems %}
+            <tr>
+                <td class="col-sr" style="text-align:center;">{{ forloop.counter }}</td>
+                <td class="col-name">
+                    {{ item.product_name }}
+                    {% if item.product_code %}<br><small>{{ item.product_code }}</small>{% endif %}
+                </td>
+                <td class="col-hsn" style="text-align:center;">{{ item.hsn_code|default:"" }}</td>
+                <td class="col-uom" style="text-align:center;">{{ item.uom|default:"KG" }}</td>
+                <td class="col-qty" style="text-align:center;">{{ item.qty|intcomma }}</td>
+                <td class="col-rate" style="text-align:right;">{{ item.price|floatformat:2|intcomma }}</td>
+                <td class="col-amount" style="text-align:right;">{{ item.amount|floatformat:2|intcomma }}</td>
+                <td class="col-dispr" style="text-align:center;">{{ item.discount_percent|default:"0" }}</td>
+                <td class="col-less" style="text-align:right;">{{ item.discount_amount|default:"0.00"|floatformat:2|intcomma }}</td>
+                <td class="col-taxable" style="text-align:right;">{{ item.taxable_value|floatformat:2|intcomma }}</td>
+                <td class="col-cgst-rate" style="text-align:center;">{{ item.cgst_rate|default:transaction.tax }}</td>
+                <td class="col-cgst-amt" style="text-align:right;">{{ item.cgst_amount|floatformat:2|intcomma }}</td>
+                <td class="col-sgst-rate" style="text-align:center;">{{ item.sgst_rate|default:transaction.tax }}</td>
+                <td class="col-sgst-amt" style="text-align:right;">{{ item.sgst_amount|floatformat:2|intcomma }}</td>
+                <td class="col-total" style="text-align:right;">{{ item.total|floatformat:2|intcomma }}</td>
+            </tr>
+            {% endfor %}
+
+            <!-- totals row -->
+            <tr class="totals">
+                <td colspan="4" style="text-align:right;">Total :</td>
+                <td style="text-align:center;">{{ transaction.total_qty|default:0 }}</td>
+                <td></td>
+                <td style="text-align:right;">{{ transaction.total_amount|floatformat:2|intcomma }}</td>
+                <td></td>
+                <td></td>
+                <td style="text-align:right;">{{ transaction.total_taxable|floatformat:2|intcomma }}</td>
+                <td></td>
+                <td style="text-align:right;">{{ transaction.total_cgst|floatformat:2|intcomma }}</td>
+                <td></td>
+                <td style="text-align:right;">{{ transaction.total_sgst|floatformat:2|intcomma }}</td>
+                <td style="text-align:right;">{{ transaction.grand_total|floatformat:2|intcomma }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- summary & amounts -->
+    <table class="footer" style="border-collapse: collapse;">
+        <tr>
+            <td style="width:60%; vertical-align:top; padding-right:8px;">
+                <strong>Invoice value (In Words)</strong><br>
+                <div style="border:1px solid #000; padding:6px; min-height:36px; font-weight:600;">
+                    RUPEES {{ transaction.amount_words|default:"" }} ONLY
+                </div>
+
+                <!-- conditions -->
+                <div style="margin-top:8px; font-size:10px; line-height:1.15;">
+                    <strong>CONDITION OF SALE</strong><br>
+                    1. Payment under this invoice to be made by account payee cheque / Pay Order / Demand Draft/ RTGS drawn in favour of Crust n Crumb Food Innovations India Pvt. Ltd only.<br>
+                    2. Interest @ 18% per annum will be charged in case of delay in receiving the payment beyond the terms given above.<br>
+                    3. The above prices are subject to the submission of statutory & tax forms as required under the provisions of law within stipulated time. Failing which, any extra taxes payable, including fines/penalty etc., shall be charged to the buyer's account.<br>
+                    4. The receipt of goods in short quantity or damaged condition if any to be reported to the transporter on receipt of goods and claim to be made to the seller in writing within 3 working days from the receipt.<br>
+                    5. Disputes, if any, are subject to Ernakulam jurisdiction only.
+                </div>
+            </td>
+
+            <td style="width:40%; vertical-align:top; font-size:11px;">
+                <table style="width:100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="border:1px solid #000; padding:6px;">Total Amount Before Discount :</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:right;">{{ transaction.total_before_discount|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:6px;">Total Discount :</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:right;">{{ transaction.total_discount|default:"-" }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:6px;">Total Amount Before Tax :</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:right;">{{ transaction.total_taxable|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:6px;">Total tax value :</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:right;">{{ transaction.tax_total|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:6px;">Freight & Forwarding Charges :</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:right;">{{ transaction.freight|default:"0.00"|floatformat:2|intcomma }}</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:6px; font-weight:bold;">Invoice Total :</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:right; font-weight:bold;">{{ transaction.grand_total|floatformat:2|intcomma }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- signature area -->
+    <div style="margin-top:10px;">
+        <div style="width:52%; display:inline-block; vertical-align:top;">
+            <div style="font-size:10px;">Authorised Signatory</div>
+        </div>
+        <div style="width:46%; display:inline-block; text-align:right;">
+            <div style="font-weight:bold;">CRUST N CRUMB FOOD INNOVATIONS INDIA PVT. LTD.</div>
+            <div class="box" style="margin-top:32px;"></div>
+            <div style="font-size:11px; margin-top:6px;">Authorised Signatory</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- print button only for preview -->
+<button id="printBtn" onclick="window.print()" style="padding:6px 10px; font-size:13px;">Print</button>
+
+</body>
+</html>

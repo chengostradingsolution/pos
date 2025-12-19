@@ -1,0 +1,615 @@
+{% extends "posApp/base.html" %}
+{% load static %}
+
+
+{% block pageContent %}
+<style>
+    #POS-field {
+    display: flex;
+    gap: 10px; /* optional spacing */
+    align-items: flex-start; /* makes sidebar start at top */
+}
+
+#POS-field .col-10 {
+    flex: 1; /* take remaining width */
+    min-width: 0; /* prevents overflow */
+}
+
+#POS-field .col-2 {
+    flex: 0 0 200px; /* fixed width for Grand Total */
+}
+
+</style>
+<div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+    <div class="mdc-card py-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">Point of Sales-{{r}}</h4>
+        </div>
+    </div>
+</div>
+
+<div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+    <div class="mdc-card">
+            <form action="/checkpageprocess/" method="POST" id="addpos">
+            {% csrf_token %}
+            <fieldset>
+                <legend>Add Customer Details</legend>
+                <div class="row align-items-end">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label for="product-id">Select Existing Customer</label>
+                            
+                            
+                 
+                        
+                        <select id="customerselect" class="form-select form-select-sm" name="customerselect">
+    <option value="" disabled selected>-- Select --</option>
+    {% for customer in customers %}
+        <option value="{{ customer.id }}" 
+                data-idd="{{ customer.id }}"
+                data-name="{{ customer.name }}"  
+                data-phone="{{ customer.phone }}" 
+                data-gstin="{{ customer.gstin }}" 
+                data-email="{{ customer.email }}"
+                data-address="{{ customer.address }}"
+                data-city="{{ customer.city }}"
+                data-state="{{ customer.state }}"
+                data-pin="{{ customer.pin }}"
+                data-statecode="{{ customer.statecode }}"
+                data-sname="{{ customer.sname }}"  
+                data-sphone="{{ customer.sphone }}" 
+                data-sgstin="{{ customer.sgstin }}" 
+                data-semail="{{ customer.semail }}"
+                data-saddress="{{ customer.saddress }}"
+                data-scity="{{ customer.scity }}"
+                data-sstate="{{ customer.sstate }}"
+                data-spin="{{ customer.spin }}"
+                data-sstatecode="{{ customer.sstatecode }}">
+            {{ customer.id }} - {{ customer.name }}
+        </option>
+    {% endfor %}
+</select>
+<input type="text" id="product-search" class="form-control form-control-sm mt-1" placeholder="Type to search customer...">
+
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        </div>
+                    </div>
+                    <hr>
+                    <h3>Billing Address</h3> 
+
+                     <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control form-control-sm text-center" name="name" id="name"  >
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="gstin">GSTIN</label>
+                            <input  type="text" class="form-control form-control-sm text-center" name="gstin" id="gstin" >
+                        </div>
+                    </div>
+
+                   
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="phone">Phone</label>
+                            <input  type="text" class="form-control form-control-sm text-center" name="phone" id="phone" >
+                        </div>
+                    </div>
+
+                     <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="email">E-mail</label>
+                            <input type="email"  class="form-control form-control-sm text-center" name="email" id="email" >
+                        </div>
+                    </div>
+
+                      <div class="col-lg-6 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="address">Address</label>
+                            <textarea class="form-control" name="address" id="address"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="city">City</label>
+                            <input type="text"  class="form-control form-control-sm text-center" name="city" id="city" >
+                        </div>
+                    </div>
+
+
+                            <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="state">State</label>
+                            <input type="text" class="form-control form-control-sm text-center" name="state" id="state" >
+                        </div>
+                    </div>
+
+
+                     <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="pin">Pin</label>
+                            <input  type="number"  class="form-control form-control-sm text-center" name="pin" id="pin" >
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="statecode">State Code</label>
+                            <input  type="number" class="form-control form-control-sm text-center" name="statecode" id="statecode" >
+                        </div>
+                    </div>
+<hr>
+<h3 class="mb-3">Shipping Address</h3> 
+
+                    <div class="col-lg-12 col-md-12 col-md-12 mb-5">
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="check" name="check" onchange="toggleShipping()">
+                    <label class="form-check-label" for="check">Same as Billing Address</label>
+                    </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+
+
+    
+                        <div class="form-group mb-3">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control form-control-sm text-center" name="sname" id="sname"  >
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="gstin">GSTIN</label>
+                            <input  type="text" class="form-control form-control-sm text-center" name="sgstin" id="sgstin" >
+                        </div>
+                    </div>
+
+                   
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="phone">Phone</label>
+                            <input  type="text" class="form-control form-control-sm text-center" name="sphone" id="sphone" >
+                        </div>
+                    </div>
+
+                     <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="email">E-mail</label>
+                            <input type="email"  class="form-control form-control-sm text-center" name="semail" id="semail" >
+                        </div>
+                    </div>
+
+                      <div class="col-lg-6 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="address">Address</label>
+                            <textarea class="form-control" name="saddress" id="saddress"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="city">City</label>
+                            <input type="text"  class="form-control form-control-sm text-center" name="scity" id="scity" >
+                        </div>
+                    </div>
+
+
+                            <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="state">State</label>
+                            <input type="text" class="form-control form-control-sm text-center" name="sstate" id="sstate" >
+                        </div>
+                    </div>
+
+
+                     <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="pin">Pin</label>
+                            <input  type="number"  class="form-control form-control-sm text-center" name="spin" id="spin" >
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="statecode">State Code</label>
+                            <input  type="number" class="form-control form-control-sm text-center" name="sstatecode" id="sstatecode" >
+                        </div>
+                    </div>
+                    
+
+
+            
+                    
+
+                    <div class="col-lg-3 col-md-2 col-md-12">
+                        <div class="form-group mb-3">
+                            <input type="submit" class="btn btn-light btn-sm bg-gradient border rounded-0 text-start"  id="add_item" value="Save Customer"> 
+                            <input type="reset" value="Reset">
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+
+
+
+
+ <form action="/createsale/" id="check_out" method="POST">
+    {% csrf_token %}
+   <fieldset>
+   
+    <div class="d-flex w-100" id="POS-field" style="gap:15px; align-items:flex-start;">
+        <!-- Table Section -->
+        <div class="flex-grow-1 bg-gradient bg-light border p-2" style="max-height:500px; overflow-y:auto; min-width:0;">
+            <table class="table table-bordered table-sm mb-0">
+                <colgroup>
+                    <col width="5%">
+
+                    <col width="5%">
+                    <col width="15%">
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="7%">
+                    <col width="8%">
+                    <col width="10%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="10%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="10%">
+                </colgroup>
+                <thead class="table-dark">
+                    <tr style="position: sticky; top: 0; background-color: #343a40; z-index: 10;">
+                        <th class="text-center py-1" style="color: white;">Action</th>
+
+                        <th class="text-center py-1" style="color: white;">Sr</th>
+                        <th class="text-center py-1" style="color: white;">Product</th>
+                        <th class="text-center py-1" style="color: white;">HSN</th>
+                        <th class="text-center py-1" style="color: white;">UOM</th>
+                        <th class="text-center py-1" style="color: white;">QTY</th>
+                        <th class="text-center py-1" style="color: white;">Rate</th>
+                        <th class="text-center py-1" style="color: white;">Amount</th>
+                        <th class="text-center py-1" style="color: white;">Dis %</th>
+                        <th class="text-center py-1" style="color: white;">Less %</th>
+                        <th class="text-center py-1" style="color: white;">Taxable</th>
+                        <th class="text-center py-1"  style="color: white;">SGST %</th>
+                        <th class="text-center py-1" style="color: white;">SGST</th>
+                        <th class="text-center py-1"  style="color: white;">CGST %</th>
+                        <th class="text-center py-1"  style="color: white;">CGST</th>
+                        <th class="text-center py-1"  style="color: white;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cartitems %}
+                        <tr >
+                            <td><a href="/deleteproductpos/{{item.id}}/" class="btn btn-danger btn-sm">X</a></td>
+
+                            <td class="text-center">{{ forloop.counter }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.code }}</td>
+                            <td>{{ item.uom }}</td>
+                            <td>{{ item.qty }}</td>
+                            <td>{{ item.price }}</td>
+                            <td class="totalsum">{{ item.tamount }}</td>
+                            <td>{{ item.dispercent }}</td>
+                            <td class="totaldis">{{ item.dis }}</td>
+                            <td>{{ item.taxamount }}</td>
+                            <td>{{ item.sgstpercent }}</td>
+                            <td class="totaltax">{{ item.sgst }}</td>
+                            <td>{{ item.cgstpercent }}</td>
+                            <td class="totaltax">{{ item.cgst }}</td>
+                            <td class="totalllsum">{{ item.totalamount }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="16" class="text-center">No items added.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sidebar Section -->
+        <div class="flex-shrink-0 bg-gradient bg-dark bg-opacity-50 border p-3" style="width:220px;">
+            <dl class="mb-0">
+                <dt class="h5 fw-bold text-light">Sub Total</dt>
+                <dd class="text-end py-1 px-2 rounded-0 bg-light">
+                    <input type="hidden" name="sub_total1" value="0" id="sub_total1">
+                    <span class="h4 fw-bold" id="sub_total">{{ sub_total|floatformat:2 }}</span>
+                </dd>
+
+                <dt class="h5 fw-bold text-light">Total Discounts</dt>
+                <dd>
+                    <input type="number" id="total_discount" name="total_discount1" class="form-control form-control-sm text-end fw-bold" step="any" min="0" name="total_discount" value="0">
+                </dd>
+
+                <dt class="h5 fw-bold text-light">Tax Amount</dt>
+                <dd class="text-end py-1 px-2 rounded-0 bg-light">
+                    <input type="hidden" name="taxamount1" value="0" id="tax_amount1">
+                    <span class="h4 fw-bold" id="tax_amount">{{ tax_amount|floatformat:2 }}</span>
+                </dd>
+
+                <dt class="h5 fw-bold text-light">Grand Total (Rounded off)</dt>
+                <dd class="text-end py-1 px-2 rounded-0 bg-light">
+                    <input type="hidden" name="grand_total1" value="0" id="grand_total1">
+                    <span class="h2 fw-bold" id="grand_total">{{ grand_total|floatformat:2 }}</span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+    
+</fieldset>
+
+
+
+            <div class="row">
+                <div class="col-md-12 text-end">
+                    <input class="btn btn-success  " type="submit" value="Bill">
+                    <a class="btn btn-danger  " href="/deleteproductposflash/">Cancel</a>
+                </div>
+            </div>
+ </form>
+    </div>
+</div>
+
+
+
+
+<script>
+function round2(num) {
+    return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+function round0(num) {
+    return Math.round(num);
+}
+
+
+
+const select = document.getElementById('customerselect');
+const searchInput = document.getElementById('product-search');
+
+searchInput.addEventListener('input', function() {
+    const filter = this.value.toLowerCase();
+    const options = select.querySelectorAll('option');
+
+    options.forEach(option => {
+        const text = option.text.toLowerCase();
+        option.style.display = text.includes(filter) ? 'block' : 'none';
+    });
+});
+
+
+
+
+
+document.getElementById('customerselect').addEventListener('change', function () {
+
+    let opt = this.options[this.selectedIndex];
+    document.getElementById('name').value = opt.dataset.name || "";
+
+    document.getElementById('gstin').value = opt.dataset.gstin || "";
+    document.getElementById('phone').value = opt.dataset.phone || "" ;
+    document.getElementById('email').value = opt.dataset.email || "";
+    document.getElementById('address').value = opt.dataset.address || "";
+    document.getElementById('city').value = opt.dataset.city || "";
+    document.getElementById('state').value = opt.dataset.state || "";
+    document.getElementById('statecode').value = opt.dataset.statecode || "";
+    document.getElementById('pin').value = opt.dataset.pin || "";
+
+    document.getElementById('sname').value = opt.dataset.sname || "";
+
+    document.getElementById('sgstin').value = opt.dataset.sgstin || "";
+    document.getElementById('sphone').value = opt.dataset.sphone || "" ;
+    document.getElementById('semail').value = opt.dataset.semail || "";
+    document.getElementById('saddress').value = opt.dataset.saddress || "";
+    document.getElementById('scity').value = opt.dataset.scity || "";
+    document.getElementById('sstate').value = opt.dataset.sstate || "";
+    document.getElementById('sstatecode').value = opt.dataset.sstatecode || "";
+    document.getElementById('spin').value = opt.dataset.spin || "";
+    document.getElementById('check_out').action += opt.dataset.idd || "";
+    document.getElementById('check_out').action +="/";
+
+
+
+    //Cal();  🔥 Let ONE function handle all math
+});
+
+
+
+
+
+
+
+
+
+
+function toggleShipping() {
+    const checked = document.getElementById("check").checked;
+
+    const billing = {
+        
+
+    name:document.getElementById('name').value ,
+
+    gstin:document.getElementById('gstin').value, 
+    phone:document.getElementById('phone').value ,
+    email:document.getElementById('email').value ,
+    address:document.getElementById('address').value ,
+    city:document.getElementById('city').value ,
+    state:document.getElementById('state').value ,
+    statecode:document.getElementById('statecode').value ,
+    pin:document.getElementById('pin').value 
+    };
+
+    const shippingFields = [
+       document.getElementById('sname'),
+
+    document.getElementById('sgstin'),
+    document.getElementById('sphone'),
+    document.getElementById('semail'),
+    document.getElementById('saddress'),
+    document.getElementById('scity'),
+    document.getElementById('sstate'),
+    document.getElementById('sstatecode'),
+    document.getElementById('spin')
+    ];
+
+    if (checked) {
+      
+        document.getElementById('sname').value = billing.name;
+
+        document.getElementById('sgstin').value = billing.gstin;
+        document.getElementById('sphone').value = billing.phone;
+        document.getElementById('semail').value = billing.email;
+        document.getElementById('saddress').value = billing.address;
+        document.getElementById('scity').value = billing.city;
+        document.getElementById('sstate').value = billing.state;
+        document.getElementById('sstatecode').value = billing.statecode;
+        document.getElementById('spin').value = billing.pin;
+    } else {
+        document.getElementById('sname').value = "";
+
+        document.getElementById('sgstin').value = "";
+        document.getElementById('sphone').value = "";
+        document.getElementById('semail').value = "";
+        document.getElementById('saddress').value = "";
+        document.getElementById('scity').value = "";
+        document.getElementById('sstate').value = "";
+        document.getElementById('sstatecode').value = "";
+        document.getElementById('spin').value = "";
+    }
+}
+
+
+
+function Cal(){
+
+    let pprice = Number(document.getElementById('product-price').value) || 0;
+    let pqty   = Number(document.getElementById('product-qty').value) || 0;
+
+    // Total
+    let total = round2(pqty * pprice);
+    document.getElementById('product-total').value = total;
+
+    // Discount
+    let disper = Number(document.getElementById('product-dispercent').value) || 0;
+    let discount = round2((disper / 100) * total);
+    document.getElementById('product-dis').value = discount;
+
+    // Taxable amount
+    let taxable = round2(total - discount);
+    document.getElementById('product-taxamount').value = taxable;
+
+    // SGST
+    let sgstPercent = Number(document.getElementById('product-sgstpercent').value) || 0;
+    let sgst = round2((sgstPercent / 100) * taxable);
+    document.getElementById('product-sgst').value = sgst;
+
+    // CGST
+    let cgstPercent = Number(document.getElementById('product-cgstpercent').value) || 0;
+    let cgst = round2((cgstPercent / 100) * taxable);
+    document.getElementById('product-cgst').value = cgst;
+
+    // Final total (important for accounting)
+    let finalTotal = round2(taxable + sgst + cgst);
+    let payable = round0(finalTotal);
+
+    document.getElementById('product-totalamount').value = payable;
+}
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+<script>
+function round2(num) {
+    return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+function round0(num) {
+    return Math.round(num);
+}
+
+
+
+let sum = 0;
+let taxsum = 0;
+let discsum=0;
+let totalllsum=0;
+
+
+document.querySelectorAll("td.totalsum").forEach(td => {
+  sum += parseFloat(td.textContent) || 0;
+});
+
+document.querySelectorAll("td.totaltax").forEach(td => {
+  taxsum += parseFloat(td.textContent) || 0;
+});
+
+document.querySelectorAll("td.totaldis").forEach(td => {
+  discsum += parseFloat(td.textContent) || 0;
+});
+
+document.querySelectorAll("td.totalllsum").forEach(td => {
+  totalllsum += parseFloat(td.textContent) || 0;
+});
+
+document.getElementById('sub_total').innerHTML=sum;
+document.getElementById('sub_total1').value=sum;
+
+
+document.getElementById('tax_amount').innerHTML=round2(taxsum);
+document.getElementById('tax_amount1').value=round2(taxsum);
+
+document.getElementById('total_discount').value=discsum;
+
+document.getElementById('grand_total').innerHTML=round0(totalllsum);
+document.getElementById('grand_total1').value=round0(totalllsum);
+
+
+
+
+
+</script>
+{% endblock pageContent %}
+
+{% block ScriptBlock %}
+<script>
+    // No need for additional jQuery code for adding items dynamically; it is handled by form submission.
+</script>
+{% endblock ScriptBlock %}

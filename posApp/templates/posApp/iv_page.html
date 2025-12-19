@@ -1,0 +1,408 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    
+<style>
+    @page { size: A4; margin: 10mm; }
+    html, body {
+        margin: 0;
+        padding: 0;
+        font-family: "Times New Roman", Times, serif;
+        color: #000;
+    }
+    body {
+        background: #fff;
+        -webkit-print-color-adjust: exact;
+    }
+    .page { width: 190mm; margin: 0 auto; padding: 6mm; box-sizing: border-box; border:1px solid black;margin-top:50px;}
+    .header { text-align: center; margin-bottom: 4px; }
+    .company-name { font-size: 22px; font-weight: bold; }
+    .invoice-title { font-size: 16px; font-weight: bold; margin-top: 6px; }
+
+    table { border-collapse: collapse; }
+    .details, .party-table, .prod-table { width: 100%; margin-top: 6px; font-size: 11px; }
+    .details td, .party-table td, .prod-table th, .prod-table td { border: 1px solid #000; padding: 6px; }
+    .prod-table th { font-size: 10px; text-align: center; }
+    .footer { margin-top: 8px; font-size: 10px; }
+
+    #printBtn { margin-top: 8px; }
+
+table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+td, th {
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.amount {
+    text-align: right;
+    font-size: 10px;
+}
+
+.product-name {
+    max-height: 28px;
+    overflow: hidden;
+}
+
+@media print {
+    tr {
+        page-break-inside: avoid;
+    }
+}
+
+
+
+    @media print { #printBtn { display: none; } 
+    #printBtn2 { display: none; } 
+    .page {margin-top:0;}}
+
+
+    @page {
+    size: A4;
+    margin: 10mm;
+}
+
+/* ================= BASE ================= */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 11px;
+    color: #000;
+}
+
+body {
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+}
+
+/* ================= PAGE ================= */
+.page {
+    width: 190mm;
+    margin: 0 auto;
+    padding: 6mm;
+    box-sizing: border-box;
+    border: 1px solid #000;
+    margin-top: 50px;
+}
+
+/* ================= HEADER ================= */
+.header {
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.company-name {
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.invoice-title {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 4px;
+    text-transform: uppercase;
+}
+
+/* ================= TABLE GLOBAL ================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;   /* VERY IMPORTANT */
+}
+
+td, th {
+    border: 1px solid #000;
+    padding: 5px;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
+/* ================= DETAILS TABLE ================= */
+.details, .party-table {
+    font-size: 10.5px;
+    margin-top: 6px;
+}
+
+.details td, .party-table td {
+    vertical-align: top;
+    line-height: 1.4;
+}
+
+/* ================= PRODUCT TABLE ================= */
+.prod-table {
+    font-size: 10px;
+    margin-top: 6px;
+}
+
+.prod-table th {
+    font-size: 9.5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    background: #f5f5f5;
+    text-align: center;
+    padding: 6px 4px;
+}
+
+.prod-table td {
+    font-size: 10px;
+    padding: 4px;
+}
+
+/* ===== PRODUCT NAME ===== */
+.product-name {
+    font-size: 10.5px;
+    font-weight: 500;
+    max-height: 28px;
+    overflow: hidden;
+}
+
+.product-name small {
+    font-size: 9px;
+    color: #333;
+}
+
+/* ===== NUMERIC COLUMNS ===== */
+.amount {
+    text-align: right;
+    font-size: 10px;
+    white-space: nowrap;
+}
+
+/* ===== TOTAL ROW ===== */
+.total-row td {
+    font-weight: bold;
+    border-top: 2px solid #000;
+}
+
+/* ================= FOOTER ================= */
+.footer {
+    font-size: 10px;
+    margin-top: 8px;
+}
+
+.footer strong {
+    font-size: 10.5px;
+}
+
+/* ===== INVOICE TOTAL ===== */
+.invoice-total {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ================= PRINT FIXES ================= */
+@media print {
+    #printBtn,
+    #printBtn2 {
+        display: none;
+    }
+
+    .page {
+        margin-top: 0;
+        border: none;
+    }
+
+    tr {
+        page-break-inside: avoid;
+    }
+}
+
+</style>
+</head>
+
+<body>
+<div class="page">
+
+    <div class="header">
+        {% load static %}
+        <img style="width: 30%;margin: 10px;height: 30%;" src="{% static 'logo.png' %}" alt="">
+        <div class="company-name">CHENGOS TRADING SOLUTION.</div>
+        <div>6/545, NADUKKANDIYIL BUILDING, MORAYUR, MALAPPURAM, KERALA-673642 <br> Phone: +91 7012159893</div>
+        <div class="invoice-title">TAX INVOICE</div>
+        <div>GSTIN : 32AAVFC6121B1ZU</div>
+    </div>
+
+    <!-- Top Details -->
+    <table class="details">
+        <tr>
+            <td>
+                <strong>Reverse Charge</strong> : No<br>
+                <strong>Invoice Number</strong> : PI-2024-00123<br>
+                <strong>Invoice Date</strong> : 04-01-2025<br>
+                <strong>State</strong> : Kerala<br>
+                <strong>S.O. Number</strong> : SO-55421
+            </td>
+            <td>
+                <strong>Transportation Mode</strong> : Road<br>
+                <strong>Vehicle Number</strong> : KL-07-BN-2299<br>
+                <strong>Date of Supply</strong> : 05-01-2025<br>
+                <strong>Place of Supply</strong> : Kochi<br>
+                <strong>Payment Terms</strong> : Advance
+            </td>
+        </tr>
+    </table>
+
+    <!-- Receiver / Consignee -->
+    <table class="party-table">
+        <tr>
+            <td>
+                <strong>Details of Receiver (Billed To)</strong><br><br>
+                <strong>Name :</strong> {{customer.name}}<br>
+                <strong>Address :</strong><br>
+                {{customer.address}},<br>
+                {{customer.city}},<br>
+                {{customer.state}} - {{customer.pin}}<br>
+                {{customer.phone}}
+                <strong>GSTIN :</strong> {{customer.gstin}}<br>
+                <strong>State :</strong> {{customer.state}} &nbsp; <strong>State Code :</strong> {{customer.statecode}}
+            </td>
+
+            <td>
+                <strong>Details of Consignee (Shipped To)</strong><br><br>
+                <strong>Name & Address :</strong><br>
+                {{customer.sname}}<br>
+                {{customer.saddress}}, {{customer.scity}}<br>
+                {{customer.sstate}} – {{customer.spin}}<br>
+                {{customer.sphone}}
+                <strong>GSTIN :</strong> {{customer.sgstin}}<br>
+                <strong>State :</strong> {{customer.sstate}} &nbsp; <strong>State Code :</strong> {{customer.sstatecode}}
+            </td>
+        </tr>
+    </table>
+
+    <!-- Product Table -->
+    <table class="prod-table">
+        <table class="prod-table">
+    <colgroup>
+        <col style="width:3%">
+        <col style="width:16%">
+        <col style="width:6%">
+        <col style="width:5%">
+        <col style="width:5%">
+        <col style="width:7%">
+        <col style="width:7%">
+        <col style="width:5%">
+        <col style="width:6%">
+        <col style="width:7%">
+        <col style="width:4%">
+        <col style="width:6%">
+        <col style="width:4%">
+        <col style="width:6%">
+        <col style="width:8%">
+    </colgroup>
+
+        <thead>
+            <tr>
+                <th>Sr</th><th>Name of Product</th><th>HSN</th><th>UOM</th><th>Qty</th>
+                <th>Rate</th><th>Amount</th><th>Dis%</th><th>Less</th><th>Taxable</th>
+                <th>CGST%</th><th>CGST</th><th>SGST%</th><th>SGST</th><th>Total</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for citem in cartitems %}
+            <tr>
+                <td></td>
+                <td>{{citem.name}}<br><small>{{citem.code}}</small></td>
+                <td>{{citem.code}}</td>
+                <td>{{citem.uom}}</td>
+                <td>{{citem.qty}}</td>
+                <td>{{citem.price|floatformat:2}}</td>
+                <td>{{citem.tamount|floatformat:2}}</td>
+                <td>{{citem.dispercent}}</td>
+                <td>{{citem.dis|floatformat:2}}</td>
+                <td>{{citem.taxamount|floatformat:2}}</td>
+                <td>{{citem.cgstpercent}}%</td>
+                <td>{{citem.cgst|floatformat:2}}</td>
+                <td>{{citem.sgstpercent}}%</td>
+                <td>{{citem.sgst|floatformat:2}}</td>
+                <td>{{citem.totalamount|floatformat:2}}</td>
+            </tr>
+
+            {% endfor %}
+
+            <tr style="font-weight:bold;">
+                <td colspan="4" style="text-align:right;">Total:</td>
+                <td>{{sale.tqty}}</td>
+                <td></td>
+                <td>{{sale.sub_total}}</td>
+                <td></td>
+                <td></td>
+                <td>{{sale.taxable}}</td>
+                <td></td>
+                <td>{{sale.tcgst}}</td>
+                <td></td>
+                <td>{{sale.tsgst}}</td>
+                <td>{{sale.grand_total}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Summary -->
+    <table class="footer">
+
+        <tr>
+            <td style="width:60%; padding-right:8px;">
+                <strong>Invoice value (In Words)</strong><br>
+                <div style="border:1px solid #000; padding:6px; min-height:36px;">
+                    <em style="font-weight: 800;">{{grand_total_words}}</em>
+                </div>
+
+                <div style="margin-top:8px;">
+                    <strong>CONDITION OF SALE</strong><br>
+                    1. Payment must be made by cheque/RTGS only.<br>
+                    2. Interest @ 18% applicable for delayed payment.<br>
+                    3. Prices subject to statutory tax submission.<br>
+                    4. Shortage/damage must be reported within 3 days.<br>
+                    5. All disputes subject to Ernakulam jurisdiction.
+                </div>
+            </td>
+
+            <td style="width:40%;">
+                <table style="width:100%;">
+                    <tr><td>Total Amount Before Discount :</td><td style="text-align:right;">{{sale.sub_total}}</td></tr>
+                    <tr><td>Total Discount :</td><td style="text-align:right;">{{sale.total_discounts}}</td></tr>
+                    <tr><td>Total Amount Before Tax :</td><td style="text-align:right;">{{sale.taxable}}</td></tr>
+                    <tr><td>Total Tax Value :</td><td style="text-align:right;">{{sale.ttax}}</td></tr>
+                    <tr><td>Freight & Charges :</td><td style="text-align:right;">0.00</td></tr>
+                    <tr><td><strong>Invoice Total :</strong></td><td style="text-align:right;"><strong>{{sale.grand_total}}</strong></td></tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Signature -->
+    <div style="margin-top:10px;">
+        <div style="width:52%; display:inline-block;">Authorised Signatory</div>
+        <div style="width:46%; display:inline-block; text-align:right;">
+            <strong>CHENGOS TRADING SOLUTION.</strong>
+            <div style="border-top:1px solid #000; width:70%; margin-left:auto; margin-top:32px;"></div>
+            <div>Authorised Signatory</div>
+        </div>
+    </div>
+<button class="btn btn-success" id="printBtn" onclick="window.print()">PRINT</button>
+ <button type="button" onclick="window.location.href='{% url 'home-page' %}'">
+    Home
+</button>
+
+</div>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,500 @@
+{% extends "posApp/base.html" %}
+{% load static %}
+
+{% block pageContent %}
+<style>
+    #POS-field {
+    display: flex;
+    gap: 10px; /* optional spacing */
+    align-items: flex-start; /* makes sidebar start at top */
+}
+
+#POS-field .col-10 {
+    flex: 1; /* take remaining width */
+    min-width: 0; /* prevents overflow */
+}
+
+#POS-field .col-2 {
+    flex: 0 0 200px; /* fixed width for Grand Total */
+}
+
+</style>
+<div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+    <div class="mdc-card py-2">
+        <div class="d-flex justify-content-between align-items-center">
+            <h4 class="card-title mb-0">Point of Sales-{{r}}</h4>
+        </div>
+    </div>
+</div>
+
+<div class="mdc-layout-grid__cell stretch-card mdc-layout-grid__cell--span-12">
+    <div class="mdc-card">
+            <form action="" method="POST" id="addpos">
+            {% csrf_token %}
+            <fieldset>
+                <legend>Add Products</legend>
+                <div class="row align-items-end">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <div class="form-group mb-3">
+                            <label for="product-id">Select Product</label>
+                            
+                            
+                 
+                        
+                        <select id="product-id" class="form-select form-select-sm" name="product_id">
+    <option value="" disabled selected>-- Select Product --</option>
+    {% for product in products %}
+        <option value="{{ product.code }}" 
+                data-idd="{{ product.id }}"
+                data-uom="{{ product.uom }}"  
+                data-price="{{ product.price }}"
+                data-dispercent="{{ product.dispercent }}" 
+                data-sgst="{{ product.sgst }}" 
+                data-cgst="{{ product.cgst }}">
+            {{ product.code }} - {{ product.name }}
+        </option>
+    {% endfor %}
+</select>
+<input type="text" id="product-search" class="form-control form-control-sm mt-1" placeholder="Type to search product...">
+
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        </div>
+                    </div>
+                     <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-uom">UOM</label>
+                            <input type="text" class="form-control form-control-sm text-center" name="product_uom" id="product-uom"  readonly>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-qty">Qty</label>
+                            <input oninput="Cal()" type="number" class="form-control form-control-sm text-center" name="product_qty" id="product-qty" >
+                        </div>
+                    </div>
+
+                   
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-price">Rate</label>
+                            <input oninput="Cal()" type="number" class="form-control form-control-sm text-center" name="product_price" id="product-price" >
+                        </div>
+                    </div>
+
+                     <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-total">Total</label>
+                            <input type="number" readonly class="form-control form-control-sm text-center" name="product_total" id="product-total" >
+                        </div>
+                    </div>
+
+                      <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-dispercent">Discount (%)</label>
+                            <input oninput="Cal()" type="number" class="form-control form-control-sm text-center" name="product_dispercent" id="product-dispercent">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-dis">Discount</label>
+                            <input oninput="Cal()" type="number" readonly class="form-control form-control-sm text-center" name="product_dis" id="product-dis" >
+                        </div>
+                    </div>
+
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-taxamount">Taxable Amount</label>
+                            <input type="number" readonly class="form-control form-control-sm text-center" name="product_taxamount" id="product-taxamount" >
+                        </div>
+                    </div>
+
+
+                            <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-cgstpercent">CGST (%)</label>
+                            <input oninput="Cal()" type="number" class="form-control form-control-sm text-center" name="product_cgstpercent" id="product-cgstpercent" >
+                        </div>
+                    </div>
+
+
+                     <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-cgst">CGST</label>
+                            <input  type="number" readonly class="form-control form-control-sm text-center" name="product_cgst" id="product-cgst" >
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-sgstpercent">SGST (%)</label>
+                            <input oninput="Cal()" type="number" class="form-control form-control-sm text-center" name="product_sgstpercent" id="product-sgstpercent" >
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-sgst">SGST</label>
+                            <input type="number" readonly class="form-control form-control-sm text-center" name="product_sgst" id="product-sgst" >
+                        </div>
+                    </div>
+
+            
+                    <div class="col-lg-3 col-md-5 col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="product-totalamount">TOTAL Amount</label>
+                            <input type="number" readonly class="form-control form-control-sm text-center" name="product_totalamount" id="product-totalamount" >
+                        </div>
+                    </div>
+                    
+
+                    <div class="col-lg-3 col-md-2 col-md-12">
+                        <div class="form-group mb-3">
+                            <input type="submit" class="btn btn-light btn-sm bg-gradient border rounded-0 text-start"  id="add_item" value="Add Item"> 
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+<script>
+function round2(num) {
+    return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+function round0(num) {
+    return Math.round(num);
+}
+
+
+
+const select = document.getElementById('product-id');
+const searchInput = document.getElementById('product-search');
+
+searchInput.addEventListener('input', function() {
+    const filter = this.value.toLowerCase();
+    const options = select.querySelectorAll('option');
+
+    options.forEach(option => {
+        const text = option.text.toLowerCase();
+        option.style.display = text.includes(filter) ? 'block' : 'none';
+    });
+});
+
+
+
+// document.getElementById('product-id').addEventListener('change', function () {
+//     let opt = this.options[this.selectedIndex];
+//     document.getElementById('product-price').value = opt.dataset.price || '';
+//     document.getElementById('product-qty').value = 1;
+
+
+    
+    
+
+//     document.getElementById('product-cgstpercent').value = opt.dataset.cgst || '';
+
+//     document.getElementById('product-sgstpercent').value = opt.dataset.sgst || '';
+//     let pprice=Number(document.getElementById('product-price').value);
+
+//     let pqty=Number(document.getElementById('product-qty').value);
+
+//     document.getElementById('product-total').value = pqty*pprice;
+//     let totpr=pprice*pqty
+//     let disper=Number(document.getElementById('product-dispercent').value);
+
+//     document.getElementById('product-dis').value = (disper/100)*totpr;
+
+// let dis=Number(document.getElementById('product-dis').value);
+
+
+//     document.getElementById('product-taxamount').value=totpr-dis;
+
+// let propricetax=Number(document.getElementById('product-taxamount').value);
+
+//     let sgst=Number(document.getElementById('product-sgstpercent').value);
+//     document.getElementById('product-sgst').value = (sgst/100)*propricetax;
+
+//     let cgst=Number(document.getElementById('product-cgstpercent').value);
+//     document.getElementById('product-cgst').value = (cgst/100)*propricetax;
+
+   
+
+
+// });
+
+
+document.getElementById('product-id').addEventListener('change', function () {
+
+    let opt = this.options[this.selectedIndex];
+    console.log(opt.dataset);
+    document.getElementById('product-uom').value = opt.dataset.uom || "";
+
+    document.getElementById('product-price').value = opt.dataset.price || 0;
+    document.getElementById('product-qty').value = 1;
+    document.getElementById('product-dispercent').value = opt.dataset.dispercent || 0;
+    document.getElementById('product-cgstpercent').value = opt.dataset.cgst || 0;
+    document.getElementById('product-sgstpercent').value = opt.dataset.sgst || 0;
+    document.getElementById('addpos').action =`/addproductpos/${opt.dataset.idd}/` ;
+
+    Cal(); // 🔥 Let ONE function handle all math
+});
+
+
+
+
+
+
+
+function Cal(){
+
+    let pprice = Number(document.getElementById('product-price').value) || 0;
+    let pqty   = Number(document.getElementById('product-qty').value) || 0;
+
+    // Total
+    let total = round2(pqty * pprice);
+    document.getElementById('product-total').value = total;
+
+    // Discount
+    let disper = Number(document.getElementById('product-dispercent').value) || 0;
+    let discount = round2((disper / 100) * total);
+    document.getElementById('product-dis').value = discount;
+
+    // Taxable amount
+    let taxable = round2(total - discount);
+    document.getElementById('product-taxamount').value = taxable;
+
+    // SGST
+    let sgstPercent = Number(document.getElementById('product-sgstpercent').value) || 0;
+    let sgst = round2((sgstPercent / 100) * taxable);
+    document.getElementById('product-sgst').value = sgst;
+
+    // CGST
+    let cgstPercent = Number(document.getElementById('product-cgstpercent').value) || 0;
+    let cgst = round2((cgstPercent / 100) * taxable);
+    document.getElementById('product-cgst').value = cgst;
+
+    // Final total (important for accounting)
+    let finalTotal = round2(taxable + sgst + cgst);
+    let payable = round0(finalTotal);
+
+    document.getElementById('product-totalamount').value = payable;
+}
+
+
+/*function Cal(){
+
+    let pprice=Number(document.getElementById('product-price').value);
+
+    let pqty=Number(document.getElementById('product-qty').value);
+
+    document.getElementById('product-total').value = pqty*pprice;
+
+    let disper=Number(document.getElementById('product-dispercent').value);
+
+    document.getElementById('product-dis').value = (disper/100)*Number(document.getElementById('product-total').value);;
+    let dis= Number(document.getElementById('product-dis').value);
+    let tot = Number(document.getElementById('product-total').value);
+
+
+    document.getElementById('product-taxamount').value=tot-dis;
+    let propricetax=Number(document.getElementById('product-taxamount').value);
+
+    let sgst=Number(document.getElementById('product-sgstpercent').value);
+    document.getElementById('product-sgst').value = (sgst/100)*propricetax;
+
+    let cgst=Number(document.getElementById('product-cgstpercent').value);
+    document.getElementById('product-cgst').value = (cgst/100)*propricetax;
+
+
+
+
+}*/
+// Cal();
+
+
+</script>
+
+
+
+
+
+   <fieldset>
+    <div class="d-flex w-100" id="POS-field" style="gap:15px; align-items:flex-start;">
+        <!-- Table Section -->
+        <div class="flex-grow-1 bg-gradient bg-light border p-2" style="max-height:500px; overflow-y:auto; min-width:0;">
+            <table class="table table-bordered table-sm mb-0">
+                <colgroup>
+                    <col width="5%">
+
+                    <col width="5%">
+                    <col width="15%">
+                    <col width="10%">
+                    <col width="10%">
+                    <col width="7%">
+                    <col width="8%">
+                    <col width="10%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="10%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="5%">
+                    <col width="10%">
+                </colgroup>
+                <thead class="table-dark">
+                    <tr style="position: sticky; top: 0; background-color: #343a40; z-index: 10;">
+                        <th class="text-center py-1" style="color: white;">Action</th>
+
+                        <th class="text-center py-1" style="color: white;">Sr</th>
+                        <th class="text-center py-1" style="color: white;">Product</th>
+                        <th class="text-center py-1" style="color: white;">HSN</th>
+                        <th class="text-center py-1" style="color: white;">UOM</th>
+                        <th class="text-center py-1" style="color: white;">QTY</th>
+                        <th class="text-center py-1" style="color: white;">Rate</th>
+                        <th class="text-center py-1" style="color: white;">Amount</th>
+                        <th class="text-center py-1" style="color: white;">Dis %</th>
+                        <th class="text-center py-1" style="color: white;">Less</th>
+                        <th class="text-center py-1" style="color: white;">Taxable</th>
+                        <th class="text-center py-1"  style="color: white;">SGST %</th>
+                        <th class="text-center py-1" style="color: white;">SGST</th>
+                        <th class="text-center py-1"  style="color: white;">CGST %</th>
+                        <th class="text-center py-1"  style="color: white;">CGST</th>
+                        <th class="text-center py-1"  style="color: white;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cartitems %}
+                        <tr >
+                            <td><a href="/deleteproductpos/{{item.id}}/" class="btn btn-danger btn-sm">X</a></td>
+
+                            <td class="text-center">{{ forloop.counter }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.code }}</td>
+                            <td>{{ item.uom }}</td>
+                            <td>{{ item.qty }}</td>
+                            <td>{{ item.price }}</td>
+                            <td class="totalsum">{{ item.tamount }}</td>
+                            <td>{{ item.dispercent }}</td>
+                            <td class="totaldis">{{ item.dis }}</td>
+                            <td>{{ item.taxamount }}</td>
+                            <td>{{ item.sgstpercent }}</td>
+                            <td class="totaltax">{{ item.sgst }}</td>
+                            <td>{{ item.cgstpercent }}</td>
+                            <td class="totaltax">{{ item.cgst }}</td>
+                            <td class="totalllsum">{{ item.totalamount }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="16" class="text-center">No items added.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Sidebar Section -->
+        <div class="flex-shrink-0 bg-gradient bg-dark bg-opacity-50 border p-3" style="width:220px;">
+            <dl class="mb-0">
+                <dt class="h5 fw-bold text-light">Sub Total</dt>
+                <dd class="text-end py-1 px-2 rounded-0 bg-light">
+                    <input type="hidden" name="sub_total" value="{{ sub_total }}">
+                    <span class="h4 fw-bold" id="sub_total">{{ sub_total|floatformat:2 }}</span>
+                </dd>
+
+                <dt class="h5 fw-bold text-light">Total Discounts</dt>
+                <dd>
+                    <input type="number" id="total_discount" class="form-control form-control-sm text-end fw-bold" step="any" min="0"  name="tax" value="{{ tax_percentage }}">
+                </dd>
+
+                <dt class="h5 fw-bold text-light">Tax Amount</dt>
+                <dd class="text-end py-1 px-2 rounded-0 bg-light">
+                    <input type="hidden" name="tax_amount" value="{{ tax_amount }}">
+                    <span class="h4 fw-bold" id="tax_amount">{{ tax_amount|floatformat:2 }}</span>
+                </dd>
+
+                <dt class="h5 fw-bold text-light">Grand Total (Rounded off)</dt>
+                <dd class="text-end py-1 px-2 rounded-0 bg-light">
+                    <input type="hidden" name="grand_total" value="{{ grand_total }}">
+                    <span class="h2 fw-bold" id="grand_total">{{ grand_total|floatformat:2 }}</span>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</fieldset>
+
+
+
+            <div class="row">
+                <div class="col-md-12 text-end">
+                    <a class="btn btn-primary " href="/checkpage/">Checkout</a>
+                    <a class="btn btn-danger " href="/deleteproductposflash/">Cancel</a>
+
+                </div>
+            </div>
+    </div>
+</div>
+
+<script>
+function round2(num) {
+    return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+function round0(num) {
+    return Math.round(num);
+}
+
+
+
+let sum = 0;
+let taxsum = 0;
+let discsum=0;
+let totalllsum=0;
+
+
+document.querySelectorAll("td.totalsum").forEach(td => {
+  sum += parseFloat(td.textContent) || 0;
+});
+
+document.querySelectorAll("td.totaltax").forEach(td => {
+  taxsum += parseFloat(td.textContent) || 0;
+});
+
+document.querySelectorAll("td.totaldis").forEach(td => {
+  discsum += parseFloat(td.textContent) || 0;
+});
+
+document.querySelectorAll("td.totalllsum").forEach(td => {
+  totalllsum += parseFloat(td.textContent) || 0;
+});
+
+document.getElementById('sub_total').innerHTML=sum;
+
+document.getElementById('tax_amount').innerHTML=round2(taxsum);
+document.getElementById('total_discount').value=discsum;
+document.getElementById('grand_total').innerHTML=round0(totalllsum);
+
+
+
+
+</script>
+{% endblock pageContent %}
+
+{% block ScriptBlock %}
+<script>
+    // No need for additional jQuery code for adding items dynamically; it is handled by form submission.
+</script>
+{% endblock ScriptBlock %}
